@@ -88,6 +88,56 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Logging
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "file": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": "logs/debug.log",
+            "formatter": "verbose",
+        },
+        "file_errors": {
+            "level": "ERROR",
+            "class": "logging.FileHandler",
+            "filename": "logs/error.log",
+            "formatter": "verbose",
+        },
+        "file_info": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "filename": "logs/info.log",
+            "formatter": "verbose",
+        },
+        "file_warning": {
+            "level": "WARNING",
+            "class": "logging.FileHandler",
+            "filename": "logs/warning.log",
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["file", "file_errors", "file_info", "file_warning"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
+    },
+    "root": {
+        "handlers": ["file_errors"],
+        "level": "ERROR",
+    },
+}
+
 
 # DRF Configurations
 REST_FRAMEWORK = {
