@@ -5,15 +5,15 @@ from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
 )
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("notes.urls")),
-    path("api/token/", include("users.urls")),
-    # Documentation
-    # YOUR PATTERNS
+    path("api/token", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/refresh", TokenRefreshView.as_view(), name="token_refresh"),
+    # API Documentation
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
-    # Optional UI:
     path(
         "api/schema/swagger-ui/",
         SpectacularSwaggerView.as_view(url_name="schema"),

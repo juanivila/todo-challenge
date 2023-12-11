@@ -18,7 +18,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # My Apps
     "notes.apps.NotesConfig",
-    "users.apps.UsersConfig",
     # Third party apps
     "rest_framework",
     "rest_framework_simplejwt",
