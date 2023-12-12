@@ -42,7 +42,11 @@ class TaskListCreateApiView(generics.ListCreateAPIView):
         """
 
         current_user = self.request.user
-        return Todo.objects.filter(owner=current_user)
+        if not current_user.is_anonymous:
+            return Todo.objects.filter(owner=current_user)
+
+        else:
+            return Todo.objects.none()
 
     def perform_create(self, serializer):
         """
@@ -107,4 +111,8 @@ class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
         """
 
         current_user = self.request.user
-        return Todo.objects.filter(owner=current_user)
+        if not current_user.is_anonymous:
+            return Todo.objects.filter(owner=current_user)
+
+        else:
+            return Todo.objects.none()
