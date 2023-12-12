@@ -20,9 +20,9 @@ http://0.0.0.0:8000/api/schema/swagger-ui/#/
 
 
 ### Notas 
-- Las variables de entorno se encuentran en el repositorio para simplificar el proceso.
+- Las variables de entorno se encuentran en el repositorio para simplificar el proceso
 - El proyecto se encuentra en la rama master
-- Se crean dos usuarios por defecto, necesarios para obtener el access token.
+- Se crean dos usuarios por defecto, necesarios para obtener el access token
   - user: admin
   - password: admin
   - user: admin2
