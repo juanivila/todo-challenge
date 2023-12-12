@@ -18,4 +18,7 @@ DJANGO_SUPERUSER_PASSWORD="admin" python manage.py createsuperuser --noinput \
     --username=admin2 \
     --email=admin2@example.com
 
+
+echo 'App is runing on port 0.0.0.0:8000'
+
 exec "$@"
