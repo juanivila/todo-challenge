@@ -4,7 +4,8 @@ echo "Apply database migrations"
 python manage.py makemigrations
 python manage.py migrate
 chmod +w /usr/src/app/db.sqlite3
-chmod 755 /logs
+mkdir logs
+chmod +w /usr/src/app/logs
 
 
 echo "Create Django superuser"

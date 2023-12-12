@@ -5,17 +5,23 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, serializers, status
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from .models import Todo
 from .serializers import TaskSerializer
-
 
 logger = logging.getLogger("django")
 
 
 class TaskListCreateApiView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
+    """
+    List and create tasks.
+
+    Allows authenticated users to list and create tasks.
+    """
+
     serializer_class = TaskSerializer
+    permission_classes = [IsAuthenticated]
 
     # Add filtering and search by title and description
     filter_backends = [DjangoFilterBackend, SearchFilter]
@@ -23,38 +29,82 @@ class TaskListCreateApiView(generics.ListCreateAPIView):
     search_fields = ["title", "description"]
 
     def get_queryset(self):
-        logger.info("Filtering task by current user")
-        user = self.request.user
-        return Todo.objects.filter(owner=user)
+        """
+        Get the queryset of Todo tasks for this view.
+
+        Parameters: None
+
+        Functionality:
+        - Gets the current authenticated user from the request.
+        - Filters the Todo queryset to only return tasks belonging to the current user.
+        - Returns the filtered queryset.
+
+        """
+
+        current_user = self.request.user
+        return Todo.objects.filter(owner=current_user)
 
     def perform_create(self, serializer):
-        # Set the owner before saving the instance
+        """
+        Custom perform_create method to handle task creation.
 
+        Parameters:
+        - serializer: The serializer containing the data to create.
+
+        Functionality:
+        - Saves the task, setting the owner to the requesting user.
+        - Logs successful creation.
+        - Returns 201 response with serialized data.
+
+        - Catches IntegrityError, logs error, and returns 500 validation error.
+
+        - Catches any other Exceptions, logs error, and returns 500 validation error.
+
+        """
         try:
             serializer.save(owner=self.request.user)
             logger.info("Task was created")
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        except IntegrityError as e:
-            logger.error(f"IntegrityError during task creation: {e}")
-            response_data = {"error": "Task creation failed due to integrity error."}
+        except IntegrityError:
+            msg = "An integrity error occurred during task creation."
+            logger.error(msg)
+            response_data = {"error": msg}
             raise serializers.ValidationError(
-                response_data, code=status.HTTP_400_BAD_REQUEST
+                response_data, code=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
         except Exception as e:
-            logger.error(f"An unexpected error occurred during task creation: {e}")
-            response_data = {
-                "error": "An unexpected error occurred during task creation."
-            }
+            msg = f"An unexpected error occurred during task creation: {e}"
+            logger.error(msg)
+            response_data = {"error": msg}
+
             raise serializers.ValidationError(
                 response_data, code=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
 
 class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Get, update, or delete a specific task.
+
+    Only the owner of the task can perform these actions.
+    """
+
     serializer_class = TaskSerializer
-    # queryset = Todo.objects.all()
 
     def get_queryset(self):
-        user = self.request.user
-        return Todo.objects.filter(owner=user)
+        """
+        Get the queryset of Todo tasks for this view.
+
+        Parameters: None
+
+        Functionality:
+        - Gets the current authenticated user from the request.
+        - Filters the Todo queryset to only return the task belonging to the current user.
+        - Returns the filtered queryset.
+
+        """
+
+        current_user = self.request.user
+        return Todo.objects.filter(owner=current_user)

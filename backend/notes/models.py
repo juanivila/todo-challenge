@@ -17,6 +17,9 @@ class Todo(models.Model):
         return f"{self.title}\n{self.description}"
 
     def save(self, *args, **kwargs):
+        """
+        Sets passed in user as owner before saving
+        """
         user = kwargs.pop("user", None)
 
         if not self.owner_id and user:
