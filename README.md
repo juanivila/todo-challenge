@@ -8,7 +8,7 @@
 make run
 ```
 
-### Or manual run Docker container
+### Or run docker-compose
 ```bash
 docker-compose up --build
 ```
