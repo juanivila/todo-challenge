@@ -10,21 +10,6 @@ from notes.models import Todo
 logger = logging.getLogger("django")
 
 
-@pytest.fixture
-def user():
-    return get_user_model().objects.create_user(
-        username="testuser", password="testpassword"
-    )
-
-
-@pytest.fixture
-def todo_data():
-    return {
-        "title": "Test Todo",
-        "description": "This is a test todo.",
-    }
-
-
 @pytest.mark.django_db
 class TestTodoModel:
     def test_title_max_length(self, user, todo_data):
